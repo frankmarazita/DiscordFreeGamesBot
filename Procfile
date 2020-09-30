@@ -1,1 +1,1 @@
-python reddit.py
+worker: python reddit.py
