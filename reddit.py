@@ -16,6 +16,9 @@ DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 DISCORD_CHANNEL = int(os.getenv('DISCORD_CHANNEL'))
 client = discord.Client()
 
+if not os.path.exists('./posts.txt'):
+    open("posts.txt", "w+")
+
 def getFreeGames():
 
     messages = []
