@@ -16,25 +16,22 @@ DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 DISCORD_CHANNEL = int(os.getenv('DISCORD_CHANNEL'))
 client = discord.Client()
 
-posts = []
-
-def getFreeGames(messages):
+def getFreeGames(past_messages):
 
     to_send = []
 
     for submission in subreddit.new(limit=10):
         op_text = submission.selftext.lower()
         if any(keyword in submission.url for keyword in keywords):
-            posts.append(submission.name)
-            title = bs4.BeautifulSoup(requests.get(
-                submission.url).text, features="html.parser").title.text
-            send = title + "\n" + submission.url
-            sent = True
-            for message in messages:
-                if send == message.content:
+            send = True
+            for message in past_messages:
+                if submission.url in message.content:
                     send = False
                     break
             if send:
+                title = bs4.BeautifulSoup(requests.get(
+                    submission.url).text, features="html.parser").title.text
+                send = title + "\n" + submission.url
                 to_send.append(send)
 
     return to_send
@@ -43,8 +40,8 @@ def getFreeGames(messages):
 async def on_ready():
     channel = client.get_channel(DISCORD_CHANNEL)
     while True:
-        messages = await channel.history(limit=10).flatten()
-        for message_to_send in getFreeGames(messages):
+        past_messages = await channel.history(limit=10).flatten()
+        for message_to_send in getFreeGames(past_messages):
             await channel.send(message_to_send)
 
         time.sleep(3600)
