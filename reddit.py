@@ -18,27 +18,34 @@ client = discord.Client()
 
 posts = []
 
-def getFreeGames():
+def getFreeGames(messages):
 
-    messages = []
+    to_send = []
 
     for submission in subreddit.new(limit=10):
         op_text = submission.selftext.lower()
-        if submission.name not in posts:
-            if any(keyword in submission.url for keyword in keywords):
-                posts.append(submission.name)
-                title = bs4.BeautifulSoup(requests.get(
-                    submission.url).text, features="html.parser").title.text
-                messages.append(title + "\n" + submission.url)
+        if any(keyword in submission.url for keyword in keywords):
+            posts.append(submission.name)
+            title = bs4.BeautifulSoup(requests.get(
+                submission.url).text, features="html.parser").title.text
+            send = title + "\n" + submission.url
+            sent = True
+            for message in messages:
+                if send == message.content:
+                    send = False
+                    break
+            if send:
+                to_send.append(send)
 
-    return messages
+    return to_send
 
 @client.event
 async def on_ready():
     channel = client.get_channel(DISCORD_CHANNEL)
     while True:
-        for message in getFreeGames():
-            await channel.send(message)
+        messages = await channel.history(limit=10).flatten()
+        for message_to_send in getFreeGames(messages):
+            await channel.send(message_to_send)
 
         time.sleep(3600)
 
