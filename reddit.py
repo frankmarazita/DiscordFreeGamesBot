@@ -10,7 +10,7 @@ import discord
 reddit_credentials = ast.literal_eval(os.getenv('REDDIT_CREDENTIALS'))
 reddit = praw.Reddit(**reddit_credentials)
 subreddit = reddit.subreddit('freegames')
-keywords = ['steam', 'epic']
+keywords = ['steam', 'epic', 'gog']
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 DISCORD_CHANNEL = int(os.getenv('DISCORD_CHANNEL'))
