@@ -1,0 +1,15 @@
+[Unit]
+Description=Discord Free Games Bot
+After=multi-user.target
+
+[Service]
+Environment=DISCORD_TOKEN=
+Environment=DISCORD_CHANNEL=
+Environment=REDDIT_CREDENTIALS=
+Type=idle
+User=maraz
+WorkingDirectory=/home/maraz/bots/DiscordFreeGamesBot
+ExecStart=python3 reddit.py
+
+[Install]
+WantedBy=multi-user.target
